@@ -3,59 +3,53 @@
 
 # <codecell> {"scrolled": true}
 
-# PROOF OF CONCEPT
+def knitting_pattern(mapping, sample_data, width):
+    total = 0
+    total2 = 0
+    pattern = 'CAST ON {} STS\n\n'.format(width)
+    
+    for i in range(0, len(sample_data)):
+        stitch = mapping[sample_data[i]]
+        if (total + stitch['needed'] > width):
+            for j in range(0, width - total):
+                total += 1
+                pattern += '{} (Total: {})\n'.format('K', total)
+            total = 0 
+            total2 = 0
+            pattern += '\nNEW ROW\n\n'
+        total += stitch['needed'] 
+        total2 += stitch['created']
+            
+        pattern +='{} (Total: {} now, {} left)\n'.format(stitch['abbrev'],
+                                                     total2,
+                                                     width-total)
+    for j in range(0, width - total):
+            total += 1
+            pattern +='{} (Total: {})\n'.format('K', total)
+    
+    pattern +='\nCAST OFF {} sts'.format(width)
+    return pattern
 
-import random
+# <codecell> {"collapsed": true}
 
-# define width of pattern
+mapping = {0:{'abbrev':'K',     'needed':1, 'created':1,},
+           1:{'abbrev':'P',     'needed':1, 'created':1,},
+           2:{'abbrev':'YO',    'needed':0, 'created':1,},
+           3:{'abbrev':'K2TOG', 'needed':2, 'created':1}}
+
+sample_data = [3, 2, 3, 2, 3, 2, 3, 2, 2, 3, 
+               0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+               1, 1, 1, 1, 1, 1, 1, 1, 1, 
+               3, 2, 3, 2, 2, 0, 2]
+
 width = 10
 
-# generates temporary number of data points i'm pulling
-total_data_pts = random.randint(40,50)
+# if a row asks for more stitches than it has available, it will move that
+# stitch request to the next row and pad the row with knit stitches.
 
+# <codecell> {}
 
-sample_data = []
-# for each pretend data point
-for x in range(0, total_data_pts):
-    # generate a random number to be considered the "actual data point gathered"
-    num = random.randint(0,3)
-    sample_data.append(num)
-    
-
-
-mapping = {0:{'stitch':'K',     'st_use':1, 'st_now':1,},
-           1:{'stitch':'P',     'st_use':1, 'st_now':1,},
-           2:{'stitch':'YO',    'st_use':0, 'st_now':1,},
-           3:{'stitch':'K2TOG', 'st_use':2, 'st_now':1}}
-
-knitting_pattern = 'CAST ON {} STS\n'.format(width)
-
-prev_row_ct = width
-curr_row_ct = 0
-
-# for each stitch (ex: 3)
-# map to appropriate stitch (ex: K2TOG, st_use: 2)
-# check if the prev_row_ct is greater than 0.
-# if it is, then:
-    # subtract st_use value from prev_row_ct to set how many stitches we have left to use
-    # add st_now value to curr_row_ct to set how many stitches we currently have.
-# if it isn't:
-    # it's either 0 or it's -1
-    # if it's -1
-
-for x in sample_data:
-    
-
-    max_st -= (1- mapping[x]['st_gain'])
-    if max_st <= 0:
-        max_st += width
-        knitting_pattern += '({} st)\n'.format(max_st)
-    knitting_pattern += (mapping[x]['stitch'] + ' ')
-    
-
-
-
-print knitting_pattern
+print knitting_pattern(mapping, sample_data, width)
 
 # <codecell> {"collapsed": true}
 
