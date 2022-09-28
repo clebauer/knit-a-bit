@@ -1,0 +1,9 @@
+pandas
+jupyter
+jupyterlab
+requests
+bs4
+instagram_private_api
+pillow
+numpy
+scipy
